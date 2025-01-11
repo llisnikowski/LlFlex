@@ -21,3 +21,12 @@ TEST(Flex_test, isObject)
     EXPECT_TRUE((llFlex::is_obj_v<P1, P2, P3, P2, P1>));
     EXPECT_TRUE((llFlex::is_obj_v<P1, P2, P3, P1, P2, P1>));
 }
+
+TEST(Flex_test, objectCount)
+{
+    EXPECT_EQ((llFlex::obj_count_v<P1, P2, P3, P1, P2>), 1);
+    EXPECT_EQ((llFlex::obj_count_v<P1, P2, P3, P2>), 0);
+    EXPECT_EQ((llFlex::obj_count_v<P1, P1, P3, P2>), 1);
+    EXPECT_EQ((llFlex::obj_count_v<P1, P2, P3, P2, P1>), 1);
+    EXPECT_EQ((llFlex::obj_count_v<P1, P2, P3, P1, P2, P1, P1>), 3);
+}
