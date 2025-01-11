@@ -6,6 +6,12 @@ template <std::size_t N>
 struct Param
 {
     std::string value;
+    constexpr bool operator==(const Param<N> &rhs) const{
+        return this->value == rhs.value;
+    }
+    constexpr bool operator==(const Param<N> &&rhs) const{
+        return this->value == rhs.value;
+    }
 };
 using P1 = Param<1>;
 using P2 = Param<2>;
@@ -48,3 +54,14 @@ TEST(Flex_test, isZeroObject)
     EXPECT_FALSE((llFlex::is_obj0_v<P1, P2, P3, P2, P1>));
     EXPECT_FALSE((llFlex::is_obj0_v<P1, P2, P3, P1, P2, P1, P1>));
 }
+
+TEST(Flex_test, getObject)
+{
+    EXPECT_EQ((llFlex::get_obj<P1>(P2{"p2"}, P3{"p3"}, P1{"p1"}, P2{"p2_2"})), P1{"p1"});
+    EXPECT_EQ((llFlex::get_obj<P1>(P2{"p2"}, P3{"p3"}, P2{"p2_2"})), P1{}); //default constructor
+    EXPECT_EQ((llFlex::get_obj<P1>(P1{"p1"}, P2{"p2"}, P3{"p3"}, P2{"p2_2"})), P1{"p1"});
+    EXPECT_EQ((llFlex::get_obj<P1>(P2{"p2"}, P3{"p3"}, P2{"p2_2"}, P1{"p1"})), P1{"p1"});
+    EXPECT_EQ((llFlex::get_obj<P1>(P2{"p2"}, P3{"p3"}, P1{"p1_1"}, P2{"p2_2"}, P1{"p1_2"}, P1{"p1_3"})), P1{"p1_1"});
+}
+
+

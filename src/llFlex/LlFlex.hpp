@@ -47,5 +47,19 @@ template <typename ...Ts>
 static constexpr bool is_obj0_v = obj_count_v<Ts...> == 0; // equivalent !is_obj_v
 
 
+template <typename T>
+constexpr T get_obj()
+{
+    return T{}; //default constructor
+}
+template <typename T, typename T1, typename ...Ts>
+constexpr T get_obj(T1 t1, Ts... ts)
+{
+    if constexpr (std::is_same_v<T, T1>) {
+        return t1;
+    }
+    return get_obj<T>(ts...);
+}
+
 
 } // namespace llFlex
