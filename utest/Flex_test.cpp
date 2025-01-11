@@ -30,3 +30,21 @@ TEST(Flex_test, objectCount)
     EXPECT_EQ((llFlex::obj_count_v<P1, P2, P3, P2, P1>), 1);
     EXPECT_EQ((llFlex::obj_count_v<P1, P2, P3, P1, P2, P1, P1>), 3);
 }
+
+TEST(Flex_test, isOneObject)
+{
+    EXPECT_TRUE((llFlex::is_obj1_v<P1, P2, P3, P1, P2>));
+    EXPECT_FALSE((llFlex::is_obj1_v<P1, P2, P3, P2>));
+    EXPECT_TRUE((llFlex::is_obj1_v<P1, P1, P3, P2>));
+    EXPECT_TRUE((llFlex::is_obj1_v<P1, P2, P3, P2, P1>));
+    EXPECT_FALSE((llFlex::is_obj1_v<P1, P2, P3, P1, P2, P1, P1>));
+}
+
+TEST(Flex_test, isZeroObject)
+{
+    EXPECT_FALSE((llFlex::is_obj0_v<P1, P2, P3, P1, P2>));
+    EXPECT_TRUE((llFlex::is_obj0_v<P1, P2, P3, P2>));
+    EXPECT_FALSE((llFlex::is_obj0_v<P1, P1, P3, P2>));
+    EXPECT_FALSE((llFlex::is_obj0_v<P1, P2, P3, P2, P1>));
+    EXPECT_FALSE((llFlex::is_obj0_v<P1, P2, P3, P1, P2, P1, P1>));
+}

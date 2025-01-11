@@ -41,5 +41,11 @@ template <typename ...Ts>
 static constexpr std::size_t obj_count_v = obj_count<Ts...>::count;
 
 
+template <typename ...Ts>
+static constexpr bool is_obj1_v = obj_count_v<Ts...> == 1;
+template <typename ...Ts>
+static constexpr bool is_obj0_v = obj_count_v<Ts...> == 0; // equivalent !is_obj_v
+
+
 
 } // namespace llFlex
