@@ -47,5 +47,56 @@ template <typename ...Ts>
 static constexpr bool is_obj0_v = obj_count_v<Ts...> == 0; // equivalent !is_obj_v
 
 
+template <typename T>
+constexpr std::enable_if_t<std::is_default_constructible_v<T>, T> 
+get_obj_opt()
+{
+    return T{}; //default constructor
+}
+template <typename T>
+constexpr std::enable_if_t<!std::is_default_constructible_v<T>, T> 
+get_obj_opt()
+{
+    static_assert(std::is_default_constructible_v<T>, "No default constructor");
+}
+
+template <typename T, typename T1, typename ...Ts>
+constexpr T get_obj_opt(T1 t1, Ts... ts)
+{
+    if constexpr (std::is_same_v<T, T1>) {
+        return t1;
+    }
+    else {
+        return get_obj_opt<T>(ts...);
+    }
+}
+
+template <typename T, typename ...Ts>
+constexpr T get_obj(Ts... ts)
+{
+    static_assert(is_obj_v<T, Ts...>, "No object type");
+    if constexpr(is_obj_v<T, Ts...>){
+        return get_obj_opt<T>(ts...);
+    }
+}
+
+
+template <typename T>
+constexpr T get_obj_or(T def)
+{
+    return def;
+}
+
+template <typename T, typename T1, typename ...Ts>
+constexpr T get_obj_or(T def, T1 t1, Ts... ts)
+{
+    if constexpr (std::is_same_v<T, T1>) {
+        return t1;
+    }
+    else {
+        return get_obj_or<T>(def, ts...);
+    }
+}
+
 
 } // namespace llFlex
