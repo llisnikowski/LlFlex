@@ -81,4 +81,22 @@ constexpr T get_obj(Ts... ts)
 }
 
 
+template <typename T>
+constexpr T get_obj_or(T def)
+{
+    return def;
+}
+
+template <typename T, typename T1, typename ...Ts>
+constexpr T get_obj_or(T def, T1 t1, Ts... ts)
+{
+    if constexpr (std::is_same_v<T, T1>) {
+        return t1;
+    }
+    else {
+        return get_obj_or<T>(def, ts...);
+    }
+}
+
+
 } // namespace llFlex

@@ -98,4 +98,13 @@ TEST(Flex_test, getObject)
     // EXPECT_EQ((llFlex::get_obj<Pn>(P2{"p2"}, P3{"p3"}, P2{"p2_2"})), Pn{"Pn"});
 }
 
+TEST(Flex_test, getObjectOr)
+{
+    EXPECT_EQ((llFlex::get_obj_or<P1>(P1{"default"}, P2{"p2"}, P3{"p3"}, P1{"p1"}, P2{"p2_2"})), P1{"p1"});
+    EXPECT_EQ((llFlex::get_obj_or<P1>(P1{"default"}, P2{"p2"}, P3{"p3"}, P2{"p2_2"})), P1{"default"}); //default constructor
+    EXPECT_EQ((llFlex::get_obj_or<P1>(P1{"default"}, P1{"p1"}, P2{"p2"}, P3{"p3"}, P2{"p2_2"})), P1{"p1"});
+    EXPECT_EQ((llFlex::get_obj_or<P1>(P1{"default"}, P2{"p2"}, P3{"p3"}, P2{"p2_2"}, P1{"p1"})), P1{"p1"});
+    EXPECT_EQ((llFlex::get_obj_or<P1>(P1{"default"}, P2{"p2"}, P3{"p3"}, P1{"p1_1"}, P2{"p2_2"}, P1{"p1_2"}, P1{"p1_3"})), P1{"p1_1"});
+}
+
 
