@@ -3,13 +3,20 @@
 namespace llFlex
 {
 
+template <typename T1, typename T2>
+constexpr bool is_same_obj = std::is_same_v<
+    std::remove_reference_t<T1>,
+    std::remove_reference_t<T2>
+>;
+
+
 template <typename ...Ts>
 struct is_obj;
 template <typename T, typename T1, typename ...Ts>
 struct is_obj<T, T1, Ts...>
 {
     using value_type = std::conditional_t<
-        std::is_same_v<T, T1>, 
+        is_same_obj<T, T1>,
         std::true_type,
         typename is_obj<T, Ts...>::value_type
     >;
@@ -29,7 +36,7 @@ template <typename T, typename T1, typename ...Ts>
 struct obj_count<T, T1, Ts...>
 {
     static constexpr std::size_t count = 
-        (std::is_same_v<T, T1> ? 1 : 0)
+        (is_same_obj<T, T1> ? 1 : 0)
         + obj_count<T, Ts...>::count;
 };
 template <typename T>
@@ -63,7 +70,7 @@ get_obj_opt()
 template <typename T, typename T1, typename ...Ts>
 constexpr T get_obj_opt(T1 t1, Ts... ts)
 {
-    if constexpr (std::is_same_v<T, T1>) {
+    if constexpr (is_same_obj<T, T1>) {
         return t1;
     }
     else {
@@ -90,7 +97,7 @@ constexpr T get_obj_or(T def)
 template <typename T, typename T1, typename ...Ts>
 constexpr T get_obj_or(T def, T1 t1, Ts... ts)
 {
-    if constexpr (std::is_same_v<T, T1>) {
+    if constexpr (is_same_obj<T, T1>) {
         return t1;
     }
     else {
@@ -100,13 +107,13 @@ constexpr T get_obj_or(T def, T1 t1, Ts... ts)
 
 
 template <typename T, std::size_t N>
-constexpr std::enable_if_t<std::is_default_constructible_v<T>, T> 
+constexpr std::enable_if_t<std::is_default_constructible_v<T>, T>
 get_objN_opt()
 {
     return T{}; //default constructor
 }
 template <typename T, std::size_t N>
-constexpr std::enable_if_t<!std::is_default_constructible_v<T>, T> 
+constexpr std::enable_if_t<!std::is_default_constructible_v<T>, T>
 get_objN_opt()
 {
     static_assert(std::is_default_constructible_v<T>, "No default constructor");
@@ -115,7 +122,7 @@ get_objN_opt()
 template <typename T, std::size_t N, typename T1, typename ...Ts>
 constexpr T get_objN_opt(T1 t1, Ts... ts)
 {
-    if constexpr (std::is_same_v<T, T1>) {
+    if constexpr (is_same_obj<T, T1>) {
         if constexpr (N == 0){
             return t1;
         }
@@ -146,7 +153,7 @@ constexpr T get_objN_or(T def)
 template <typename T, std::size_t N, typename T1, typename ...Ts>
 constexpr T get_objN_or(T def, T1 t1, Ts... ts)
 {
-    if constexpr (std::is_same_v<T, T1>) {
+    if constexpr (is_same_obj<T, T1>) {
         if constexpr (N == 0){
             return t1;
         }
