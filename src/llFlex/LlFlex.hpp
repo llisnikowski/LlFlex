@@ -99,4 +99,65 @@ constexpr T get_obj_or(T def, T1 t1, Ts... ts)
 }
 
 
+template <typename T, std::size_t N>
+constexpr std::enable_if_t<std::is_default_constructible_v<T>, T> 
+get_objN_opt()
+{
+    return T{}; //default constructor
+}
+template <typename T, std::size_t N>
+constexpr std::enable_if_t<!std::is_default_constructible_v<T>, T> 
+get_objN_opt()
+{
+    static_assert(std::is_default_constructible_v<T>, "No default constructor");
+}
+
+template <typename T, std::size_t N, typename T1, typename ...Ts>
+constexpr T get_objN_opt(T1 t1, Ts... ts)
+{
+    if constexpr (std::is_same_v<T, T1>) {
+        if constexpr (N == 0){
+            return t1;
+        }
+        else {
+            return get_objN_opt<T, N-1>(ts...);
+        }
+    }
+    else {
+        return get_objN_opt<T, N>(ts...);
+    }
+}
+
+template <typename T, std::size_t N, typename ...Ts>
+constexpr T get_objN(Ts... ts)
+{
+    static_assert(obj_count_v<T, Ts...> >= N+1, "Wrong amount of object type");
+    if constexpr(obj_count_v<T, Ts...> >= N+1){
+        return get_objN_opt<T, N>(ts...);
+    }
+}
+
+template <typename T, std::size_t N>
+constexpr T get_objN_or(T def)
+{
+    return def;
+}
+
+template <typename T, std::size_t N, typename T1, typename ...Ts>
+constexpr T get_objN_or(T def, T1 t1, Ts... ts)
+{
+    if constexpr (std::is_same_v<T, T1>) {
+        if constexpr (N == 0){
+            return t1;
+        }
+        else {
+            return get_objN_or<T, N-1>(def, ts...);
+        }
+    }
+    else {
+        return get_objN_or<T, N>(def, ts...);
+    }
+}
+
+
 } // namespace llFlex
