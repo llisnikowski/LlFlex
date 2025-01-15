@@ -21,9 +21,13 @@ INTERFACE
 
 
 option(BUILD_UTEST "Build tests" ON)
+option(BUILD_EXAMPLE "Build tests" ON)
 
 if(BUILD_UTEST)
     add_subdirectory(utest)
+endif()
+if(BUILD_EXAMPLE)
+    add_subdirectory(example)
 endif()
 
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
