@@ -21,7 +21,9 @@ macro(AddDefaultFlags target)
     if (MSVC)
         target_compile_options(${target} ${ARGUMENTS_SCOPE} -W4 /XW)
     else ()
-        target_compile_options(${target} ${ARGUMENTS_SCOPE} -Wall -Wextra -pedantic -Wno-unused-function -Wno-unused-parameter -Wconversion -Werror)
+        target_compile_options(${target} ${ARGUMENTS_SCOPE} -Wall -Wextra -pedantic -Wconversion -Werror
+            -Wno-unused-function -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-unused-variable
+        )
     endif ()
 
     if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
