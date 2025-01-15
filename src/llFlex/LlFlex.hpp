@@ -11,6 +11,24 @@ constexpr bool is_same_obj = std::is_same_v<
 >;
 
 
+// args == std::forward
+template<typename T>
+[[__nodiscard__]]
+inline constexpr T&& args(std::remove_reference_t<T>& t) noexcept
+{
+    return static_cast<T&&>(t); 
+}
+
+template<typename T>
+[[__nodiscard__]]
+inline constexpr T&& args(std::remove_reference_t<T>&& t) noexcept
+{
+    static_assert(!std::is_lvalue_reference<T>::value,
+    "std::forward must not be used to convert an rvalue to an lvalue");
+    return static_cast<T&&>(t);
+}
+
+
 template <typename ...Ts>
 struct is_obj;
 template <typename T, typename T1, typename ...Ts>
