@@ -185,4 +185,19 @@ inline constexpr T&& get_objN_or(T&& def, T1&& t1, Ts&&... ts)
 }
 
 
+template <typename T, typename ...Ts>
+inline constexpr decltype(T::value) get_obj_opt_v(Ts&&... ts) {return get_obj_opt<T>(args<Ts>(ts)...).value;}
+template <typename T, typename ...Ts>
+inline constexpr decltype(T::value) get_obj_v(Ts&&... ts) {return get_obj<T>(args<Ts>(ts)...).value;}
+template <typename T, typename ...Ts>
+inline constexpr decltype(T::value) get_obj_or_v(T&& t, Ts&&... ts) {return get_obj_or(args<T>(t), args<Ts>(ts)...).value;}
+
+template <typename T, std::size_t N, typename ...Ts>
+inline constexpr decltype(T::value) get_objN_opt_v(Ts&&... ts) {return get_objN_opt<T, N>(args<Ts>(ts)...).value;}
+template <typename T, std::size_t N, typename ...Ts>
+inline constexpr decltype(T::value) get_objN_v(Ts&&... ts) {return get_objN<T, N>(args<Ts>(ts)...).value;}
+template <typename T, std::size_t N, typename ...Ts>
+inline constexpr decltype(T::value) get_objN_or_v(T&& t, Ts&&... ts) {return get_objN_or<T, N>(args<T>(t), args<Ts>(ts)...).value;}
+
+
 } // namespace llFlex
