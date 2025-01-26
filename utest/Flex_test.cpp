@@ -19,6 +19,16 @@ using P3 = Param<3>;
 using P4 = Param<4>;
 using P5 = Param<5>;
 
+template <typename T>
+class ParamT{};
+template <typename T>
+class ParamT2{};
+
+template <typename T>
+using Pt = ParamT<T>;
+template <typename T>
+using Pt2 = ParamT2<T>;
+
 struct ParamNdc
 {
     // ParamNdc() = delete; // No default constructor
@@ -140,4 +150,13 @@ TEST(Flex_test, getObjectNumberOr)
     EXPECT_EQ((llFlex::get_objN_or<Pn, 2>(Pn{"def"}, Pn{"pn_1"}, P3{"p3"}, Pn{"pn_2"}, P2{"p2_2"})), Pn{"def"});
 }
 
+
+TEST(Flex_test, getInnerType)
+{
+    EXPECT_TRUE((std::is_same_v<llFlex::get_inner_t<Pt<int>>, int>));
+    EXPECT_FALSE((std::is_same_v<llFlex::get_inner_t<Pt<std::string>>, int>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_inner_t<Pt<Pt<int>>>, Pt<int>>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_inner_t<Pt<llFlex::get_inner_t<Pt<int>>>>, int>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_inner_t<int>, nullptr_t>));
+}
 

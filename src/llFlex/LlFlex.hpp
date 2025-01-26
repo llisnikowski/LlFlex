@@ -200,4 +200,20 @@ template <typename T, std::size_t N, typename ...Ts>
 inline constexpr decltype(T::value) get_objN_or_v(T&& t, Ts&&... ts) {return get_objN_or<T, N>(args<T>(t), args<Ts>(ts)...).value;}
 
 
+template <typename ...T>
+struct get_inner;
+template <template<class> typename T, typename S>
+struct get_inner<T<S>>
+{
+    using type = S;
+};
+template <typename T>
+struct get_inner<T>
+{
+    using type = nullptr_t;
+};
+template <typename T>
+using get_inner_t = typename get_inner<T>::type;
+
+
 } // namespace llFlex
