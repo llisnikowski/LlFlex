@@ -243,4 +243,23 @@ template <template<class> typename Tt ,typename ...Ts>
 using get_from_t = typename get_from<Tt, Ts...>::type;
 
 
+template <template<class> typename Tt, typename T, typename ...Ts>
+struct get_from_or
+{
+    using type = T;
+};
+template <template<class> typename Tt, typename T ,typename Ts1, typename ...Ts>
+struct get_from_or <Tt, T, Tt<Ts1>, Ts...>
+{
+    using type = Ts1;
+};
+template <template<class> typename Tt, typename T ,typename Ts1, typename ...Ts>
+struct get_from_or <Tt, T, Ts1, Ts...>
+{
+    using type = typename get_from_or<Tt, T, Ts...>::type;
+};
+template <template<class> typename Tt, typename T ,typename ...Ts>
+using get_from_or_t = typename get_from_or<Tt, T, Ts...>::type;
+
+
 } // namespace llFlex

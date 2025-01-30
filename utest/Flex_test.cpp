@@ -173,3 +173,11 @@ TEST(Flex_test, getTypeFrom)
     EXPECT_TRUE((std::is_same_v<llFlex::get_from_t<Pt2, Pt<int>, P1, Pt2<P2>>, P2>));
     // llFlex::get_from_t<Pt2, Pt<int>, P1>; //error
 }
+
+TEST(Flex_test, getTypeFromOr)
+{
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_or_t<Pt, P5, Pt<int>, char, Pt2<P1>>, int>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_or_t<Pt, P5, Pt<int>, P1, Pt<char>>, int>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_or_t<Pt2, P5, Pt<int>, P1, Pt2<P2>>, P2>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_or_t<Pt2, P5, Pt<int>, P1>, P5>)); //error
+}
