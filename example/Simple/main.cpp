@@ -1,6 +1,6 @@
 #include <iostream>
 #include <span>
-#include "llFlex/LlFlex.hpp"
+#include "llParam/LlParam.hpp"
 
 class I2c
 {
@@ -15,16 +15,16 @@ public:
     template <typename ...Ts>
     I2c(Ts&&... ts)
     {
-        static_assert(llFlex::obj_count_v<Sdk, Ts...> == 1);
-        static_assert(llFlex::is_obj1_v<Scl, Ts...>);
+        static_assert(llParam::obj_count_v<Sdk, Ts...> == 1);
+        static_assert(llParam::is_obj1_v<Scl, Ts...>);
 
-        config.sdkPin = llFlex::get_obj<Sdk>(ts...).value;
+        config.sdkPin = llParam::get_obj<Sdk>(ts...).value;
         // better (for big objects)
-        config.sclPin = llFlex::get_obj<Scl>(std::forward<Ts>(ts)...).value;
-        // llFlex::args == std::forward
+        config.sclPin = llParam::get_obj<Scl>(std::forward<Ts>(ts)...).value;
+        // llParam::args == std::forward
         // FUNC_v<>() == FUNC<>().value
-        config.address = llFlex::get_obj_v<Address>(llFlex::args<Ts>(ts)...);
-        using namespace llFlex;
+        config.address = llParam::get_obj_v<Address>(llParam::args<Ts>(ts)...);
+        using namespace llParam;
         config.baudrate = get_obj_or<Baudrate>(Baudrate{100'000}, args<Ts>(ts)...).value;
         // default constructor
         config.flags = get_obj_opt<Flags>(args<Ts>(ts)...).value;
@@ -33,13 +33,13 @@ public:
     template <typename ...Ts>
     bool write(std::span<uint8_t> data, Ts&&... ts)
     {
-        // int timeout = llFlex::get_obj_or_v(Timeout{100}, ts...);
+        // int timeout = llParam::get_obj_or_v(Timeout{100}, ts...);
         // i2c_write...(data, timeout);
         for(auto it=data.begin(); it < data.end(); ++it){
             printf("0x%x,", *it);
         }
         printf("\n");
-        printf("timeout: %d\n", llFlex::get_obj_or_v(Timeout{100}, ts...));
+        printf("timeout: %d\n", llParam::get_obj_or_v(Timeout{100}, ts...));
         // printf("timeout: %d\n", timeout);
         return true;
     }
