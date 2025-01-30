@@ -262,4 +262,15 @@ template <template<class> typename Tt, typename T ,typename ...Ts>
 using get_from_or_t = typename get_from_or<Tt, T, Ts...>::type;
 
 
+template <template<class> typename Tt, typename T1>
+struct is_from : std::false_type
+{};
+template <template<class> typename Tt, typename T1>
+struct is_from <Tt, Tt<T1>> : std::true_type
+{};
+template <template<class> typename Tt, typename T1>
+constexpr bool is_from_v = is_from<Tt, T1>::value;
+
+
+
 } // namespace llFlex
