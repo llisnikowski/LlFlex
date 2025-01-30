@@ -19,6 +19,16 @@ using P3 = Param<3>;
 using P4 = Param<4>;
 using P5 = Param<5>;
 
+template <typename T>
+class ParamT{};
+template <typename T>
+class ParamT2{};
+
+template <typename T>
+using Pt = ParamT<T>;
+template <typename T>
+using Pt2 = ParamT2<T>;
+
 struct ParamNdc
 {
     // ParamNdc() = delete; // No default constructor
@@ -141,3 +151,64 @@ TEST(Flex_test, getObjectNumberOr)
 }
 
 
+TEST(Flex_test, getInnerType)
+{
+    EXPECT_TRUE((std::is_same_v<llFlex::get_inner_t<Pt<int>>, int>));
+    EXPECT_FALSE((std::is_same_v<llFlex::get_inner_t<Pt<std::string>>, int>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_inner_t<Pt<Pt<int>>>, Pt<int>>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_inner_t<Pt<llFlex::get_inner_t<Pt<int>>>>, int>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_inner_t<int>, nullptr_t>));
+}
+
+TEST(Flex_test, isTemplateType)
+{
+    EXPECT_TRUE((llFlex::is_template_v<Pt<int>>));
+    EXPECT_FALSE((llFlex::is_template_v<P1>));
+}
+
+TEST(Flex_test, getTypeFrom)
+{
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_t<Pt, Pt<int>, char, Pt2<P1>>, int>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_t<Pt, Pt<int>, P1, Pt<char>>, int>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_t<Pt2, Pt<int>, P1, Pt2<P2>>, P2>));
+    // llFlex::get_from_t<Pt2, Pt<int>, P1>; //error
+}
+
+TEST(Flex_test, getTypeFromOr)
+{
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_or_t<Pt, P5, Pt<int>, char, Pt2<P1>>, int>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_or_t<Pt, P5, Pt<int>, P1, Pt<char>>, int>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_or_t<Pt2, P5, Pt<int>, P1, Pt2<P2>>, P2>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_or_t<Pt2, P5, Pt<int>, P1>, P5>)); //error
+}
+
+TEST(Flex_test, isTypeFrom)
+{
+    EXPECT_TRUE((llFlex::is_from_v<Pt, Pt<int>>));
+    EXPECT_FALSE((llFlex::is_from_v<Pt, P1>));
+    EXPECT_FALSE((llFlex::is_from_v<Pt, Pt2<char>>));
+}
+
+TEST(Flex_test, getTypeFromCount)
+{
+    EXPECT_EQ((llFlex::get_from_count_v<Pt, Pt<int>, char, Pt2<P1>>), 1);
+    EXPECT_EQ((llFlex::get_from_count_v<Pt, Pt<int>, P1, Pt<char>>), 2);
+    EXPECT_EQ((llFlex::get_from_count_v<Pt2, Pt<int>, P1, Pt2<P2>>), 1);
+    EXPECT_EQ((llFlex::get_from_count_v<Pt2, Pt<int>, P1>), 0);
+}
+
+TEST(Flex_test, isTypeFrom1)
+{
+    EXPECT_TRUE((llFlex::is_from1_v<Pt, Pt<int>, char, Pt2<P1>>));
+    EXPECT_FALSE((llFlex::is_from1_v<Pt, Pt<int>, P1, Pt<char>>));
+    EXPECT_TRUE((llFlex::is_from1_v<Pt2, Pt<int>, P1, Pt2<P2>>));
+    EXPECT_FALSE((llFlex::is_from1_v<Pt2, Pt<int>, P1>));
+}
+
+TEST(Flex_test, isTypeFrom0)
+{
+    EXPECT_FALSE((llFlex::is_from0_v<Pt, Pt<int>, char, Pt2<P1>>));
+    EXPECT_FALSE((llFlex::is_from0_v<Pt, Pt<int>, P1, Pt<char>>));
+    EXPECT_FALSE((llFlex::is_from0_v<Pt2, Pt<int>, P1, Pt2<P2>>));
+    EXPECT_TRUE((llFlex::is_from0_v<Pt2, Pt<int>, P1>));
+}

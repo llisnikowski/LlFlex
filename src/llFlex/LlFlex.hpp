@@ -200,4 +200,101 @@ template <typename T, std::size_t N, typename ...Ts>
 inline constexpr decltype(T::value) get_objN_or_v(T&& t, Ts&&... ts) {return get_objN_or<T, N>(args<T>(t), args<Ts>(ts)...).value;}
 
 
+template <typename ...T>
+struct get_inner;
+template <template<class> typename T, typename S>
+struct get_inner<T<S>>
+{
+    using type = S;
+};
+template <typename T>
+struct get_inner<T>
+{
+    using type = nullptr_t;
+};
+template <typename T>
+using get_inner_t = typename get_inner<T>::type;
+
+
+template <typename T>
+struct is_template : public std::false_type
+{};
+template <template<class> typename Tt, typename T>
+struct is_template<Tt<T>> : public std::true_type
+{};
+template <typename T>
+constexpr bool is_template_v = is_template<T>::value;
+
+
+template <template<class> typename Tt, typename ...Ts>
+struct get_from
+{};
+template <template<class> typename Tt ,typename Ts1, typename ...Ts>
+struct get_from <Tt, Tt<Ts1>, Ts...>
+{
+    using type = Ts1;
+};
+template <template<class> typename Tt ,typename Ts1, typename ...Ts>
+struct get_from <Tt, Ts1, Ts...>
+{
+    using type = typename get_from<Tt, Ts...>::type;
+};
+template <template<class> typename Tt ,typename ...Ts>
+using get_from_t = typename get_from<Tt, Ts...>::type;
+
+
+template <template<class> typename Tt, typename T, typename ...Ts>
+struct get_from_or
+{
+    using type = T;
+};
+template <template<class> typename Tt, typename T ,typename Ts1, typename ...Ts>
+struct get_from_or <Tt, T, Tt<Ts1>, Ts...>
+{
+    using type = Ts1;
+};
+template <template<class> typename Tt, typename T ,typename Ts1, typename ...Ts>
+struct get_from_or <Tt, T, Ts1, Ts...>
+{
+    using type = typename get_from_or<Tt, T, Ts...>::type;
+};
+template <template<class> typename Tt, typename T ,typename ...Ts>
+using get_from_or_t = typename get_from_or<Tt, T, Ts...>::type;
+
+
+template <template<class> typename Tt, typename T1>
+struct is_from : std::false_type
+{};
+template <template<class> typename Tt, typename T1>
+struct is_from <Tt, Tt<T1>> : std::true_type
+{};
+template <template<class> typename Tt, typename T1>
+constexpr bool is_from_v = is_from<Tt, T1>::value;
+
+
+template <template<class> typename Tt, typename ...Ts>
+struct get_from_count;
+template <template<class> typename Tt>
+struct get_from_count <Tt>
+{
+    static constexpr std::size_t value = 0;
+};
+template <template<class> typename Tt ,typename Ts1, typename ...Ts>
+struct get_from_count <Tt, Ts1, Ts...>
+{
+    static constexpr std::size_t value =
+        (is_from_v<Tt, Ts1> ? 1 : 0)
+        + get_from_count<Tt, Ts...>::value;
+};
+template <template<class> typename Tt ,typename ...Ts>
+constexpr std::size_t get_from_count_v = get_from_count<Tt, Ts...>::value;
+
+
+template <template<class> typename Tt ,typename ...Ts>
+constexpr bool is_from1_v = get_from_count_v<Tt, Ts...> == 1;
+template <template<class> typename Tt ,typename ...Ts>
+constexpr bool is_from0_v = get_from_count_v<Tt, Ts...> == 0;
+
+
+
 } // namespace llFlex
