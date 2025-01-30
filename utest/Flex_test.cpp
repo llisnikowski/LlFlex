@@ -165,3 +165,11 @@ TEST(Flex_test, isTemplateType)
     EXPECT_TRUE((llFlex::is_template_v<Pt<int>>));
     EXPECT_FALSE((llFlex::is_template_v<P1>));
 }
+
+TEST(Flex_test, getTypeFrom)
+{
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_t<Pt, Pt<int>, char, Pt2<P1>>, int>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_t<Pt, Pt<int>, P1, Pt<char>>, int>));
+    EXPECT_TRUE((std::is_same_v<llFlex::get_from_t<Pt2, Pt<int>, P1, Pt2<P2>>, P2>));
+    // llFlex::get_from_t<Pt2, Pt<int>, P1>; //error
+}
