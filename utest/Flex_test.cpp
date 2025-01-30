@@ -160,3 +160,8 @@ TEST(Flex_test, getInnerType)
     EXPECT_TRUE((std::is_same_v<llFlex::get_inner_t<int>, nullptr_t>));
 }
 
+TEST(Flex_test, isTemplateType)
+{
+    EXPECT_TRUE((llFlex::is_template_v<Pt<int>>));
+    EXPECT_FALSE((llFlex::is_template_v<P1>));
+}

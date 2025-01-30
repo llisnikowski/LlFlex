@@ -216,4 +216,14 @@ template <typename T>
 using get_inner_t = typename get_inner<T>::type;
 
 
+template <typename T>
+struct is_template : public std::false_type
+{};
+template <template<class> typename Tt, typename T>
+struct is_template<Tt<T>> : public std::true_type
+{};
+template <typename T>
+constexpr bool is_template_v = is_template<T>::value;
+
+
 } // namespace llFlex
