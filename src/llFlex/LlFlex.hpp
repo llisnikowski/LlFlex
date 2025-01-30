@@ -290,5 +290,11 @@ template <template<class> typename Tt ,typename ...Ts>
 constexpr std::size_t get_from_count_v = get_from_count<Tt, Ts...>::value;
 
 
+template <template<class> typename Tt ,typename ...Ts>
+constexpr bool is_from1_v = get_from_count_v<Tt, Ts...> == 1;
+template <template<class> typename Tt ,typename ...Ts>
+constexpr bool is_from0_v = get_from_count_v<Tt, Ts...> == 0;
+
+
 
 } // namespace llFlex
