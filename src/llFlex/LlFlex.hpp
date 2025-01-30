@@ -272,5 +272,23 @@ template <template<class> typename Tt, typename T1>
 constexpr bool is_from_v = is_from<Tt, T1>::value;
 
 
+template <template<class> typename Tt, typename ...Ts>
+struct get_from_count;
+template <template<class> typename Tt>
+struct get_from_count <Tt>
+{
+    static constexpr std::size_t value = 0;
+};
+template <template<class> typename Tt ,typename Ts1, typename ...Ts>
+struct get_from_count <Tt, Ts1, Ts...>
+{
+    static constexpr std::size_t value =
+        (is_from_v<Tt, Ts1> ? 1 : 0)
+        + get_from_count<Tt, Ts...>::value;
+};
+template <template<class> typename Tt ,typename ...Ts>
+constexpr std::size_t get_from_count_v = get_from_count<Tt, Ts...>::value;
+
+
 
 } // namespace llFlex

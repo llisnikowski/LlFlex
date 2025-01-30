@@ -188,3 +188,11 @@ TEST(Flex_test, isTypeFrom)
     EXPECT_FALSE((llFlex::is_from_v<Pt, P1>));
     EXPECT_FALSE((llFlex::is_from_v<Pt, Pt2<char>>));
 }
+
+TEST(Flex_test, getTypeFromCount)
+{
+    EXPECT_EQ((llFlex::get_from_count_v<Pt, Pt<int>, char, Pt2<P1>>), 1);
+    EXPECT_EQ((llFlex::get_from_count_v<Pt, Pt<int>, P1, Pt<char>>), 2);
+    EXPECT_EQ((llFlex::get_from_count_v<Pt2, Pt<int>, P1, Pt2<P2>>), 1);
+    EXPECT_EQ((llFlex::get_from_count_v<Pt2, Pt<int>, P1>), 0);
+}
