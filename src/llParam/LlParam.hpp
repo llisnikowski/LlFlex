@@ -1,7 +1,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace llFlex
+namespace llParam
 {
 
 template <typename T1, typename T2>
@@ -297,4 +297,4 @@ constexpr bool is_from0_v = get_from_count_v<Tt, Ts...> == 0;
 
 
 
-} // namespace llFlex
+} // namespace llParam

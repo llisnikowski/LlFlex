@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(LlFlex_ut LANGUAGES CXX)
+project(LlParam_ut LANGUAGES CXX)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -26,7 +26,7 @@ PRIVATE
 
 target_link_libraries(${PROJECT_NAME}
 PRIVATE
-    LlFlex::LlFlex
+    LlParam::LlParam
     gtest
     gmock
     gtest_main

@@ -1,5 +1,5 @@
-# LlFlex
-**LlFlex** is a template-based library for C++ that simplifies and enhances the creation of constructors and functions. It provides an intuitive way to pass any number of parameters, in any order, depending on the current requirements, without the need to write multiple overloaded functions.
+# LlParam
+**LlParam** is a template-based library for C++ that simplifies and enhances the creation of constructors and functions. It provides an intuitive way to pass any number of parameters, in any order, depending on the current requirements, without the need to write multiple overloaded functions.
 
 ## Features
 - **Flexible Parameter Handling**: Pass any number of parameters to functions, in any order, depending on your needs, without writing multiple overloaded functions.
@@ -23,16 +23,16 @@ public:
     template <typename ...Ts>
     I2c(Ts&&... ts)
     {
-        static_assert(llFlex::obj_count_v<Sdk, Ts...> == 1);
-        static_assert(llFlex::is_obj1_v<Scl, Ts...>);
+        static_assert(llParam::obj_count_v<Sdk, Ts...> == 1);
+        static_assert(llParam::is_obj1_v<Scl, Ts...>);
 
-        config.sdkPin = llFlex::get_obj<Sdk>(ts...).value;
+        config.sdkPin = llParam::get_obj<Sdk>(ts...).value;
         // better for big objects
-        config.sclPin = llFlex::get_obj<Scl>(std::forward<Ts>(ts)...).value;
-        // llFlex::args == std::forward
+        config.sclPin = llParam::get_obj<Scl>(std::forward<Ts>(ts)...).value;
+        // llParam::args == std::forward
         // FUNC_v<>() == FUNC<>().value
-        config.address = llFlex::get_obj_v<Address>(llFlex::args<Ts>(ts)...);
-        using namespace llFlex;
+        config.address = llParam::get_obj_v<Address>(llParam::args<Ts>(ts)...);
+        using namespace llParam;
         config.baudrate = get_obj_or_v<Baudrate>(Baudrate{100'000}, args<Ts>(ts)...);
         // default constructor if not exist
         config.flags = get_obj_opt_v<Flags>(args<Ts>(ts)...);
@@ -41,7 +41,7 @@ public:
     template <typename ...Ts>
     bool write(std::span<uint8_t> data, Ts&&... ts)
     {
-        int timeout = llFlex::get_obj_or_v(Timeout{100}, ts...);
+        int timeout = llParam::get_obj_or_v(Timeout{100}, ts...);
         // i2c_write...(data, timeout);
         return true;
     }
@@ -136,17 +136,17 @@ std::size_t is_obj0_v; // obj_count_v<Ts...> == 0
 ### CMake
 #### add_subdirectory
 Clone repo:
-`git clone git@github.com:llisnikowski/LlFlex.git`
+`git clone git@github.com:llisnikowski/LlParam.git`
 or
-`git submodule add git@github.com:llisnikowski/LlFlex.git`
+`git submodule add git@github.com:llisnikowski/LlParam.git`
 
 and add it to CMake:
 ```cmake
-add_subdirectory(path/to/LlFlex)
+add_subdirectory(path/to/LlParam)
 # ...
 target_link_libraries(${PROJECT_NAME}
 PRIVATE
-    LlFlex::LlFlex
+    LlParam::LlParam
 )
 ```
 #### FetchContent
@@ -162,5 +162,5 @@ Feel free to fork the repository, make changes, and submit a pull request. If yo
 
 ## Contact
 Łukasz Liśnikowski l.lisnikowski@gmail.com <br>
-Project Link: [https://github.com/llisnikowski/LlFlex](https://github.com/llisnikowski/LlFlex)
+Project Link: [https://github.com/llisnikowski/LlParam](https://github.com/llisnikowski/LlParam)
 

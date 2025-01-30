@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(cmake/flags.cmake)
 
-project(LlFlex LANGUAGES CXX)
+project(LlParam LANGUAGES CXX)
 
 
 add_library(${PROJECT_NAME} INTERFACE)
