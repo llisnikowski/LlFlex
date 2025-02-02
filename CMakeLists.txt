@@ -12,7 +12,10 @@ project(LlParam LANGUAGES CXX)
 
 add_library(${PROJECT_NAME} INTERFACE)
 
-AddDefaultFlags(${PROJECT_NAME} SCOPE INTERFACE)
+option(ADD_FLAGS "Add default flags" ON)
+if(ADD_FLAGS)
+    AddDefaultFlags(${PROJECT_NAME} SCOPE INTERFACE)
+endif()
 
 target_include_directories(${PROJECT_NAME}
 INTERFACE

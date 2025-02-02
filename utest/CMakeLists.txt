@@ -17,7 +17,9 @@ add_executable(${PROJECT_NAME}
     ${SOURCES}
 )
 
-AddDefaultFlags(${PROJECT_NAME})
+if(ADD_FLAGS)
+    AddDefaultFlags(${PROJECT_NAME} SCOPE INTERFACE)
+endif()
 
 target_include_directories(${PROJECT_NAME}
 PRIVATE
